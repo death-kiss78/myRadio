@@ -110,11 +110,11 @@ h2.pagetitle { line-height: 48px; margin: 5px 0 5px 0 }
 
 /* LOGO */
 #logo { flex: 1; display: flex; justify-content: center; height: 86px; box-sizing: border-box; }
-#logo svg { width:130px; height: 86px; }
+#logo svg { width: 86px; height: 86px; }
+#logo img { width: 86px; height: 86px; object-fit: contain; }
 #logo.ls { margin: 10px 0 0 0; flex: 0; }
-#logo.ls svg { width:100px; height: auto; }
-path#eh { fill: var(--logo); fill: url(#logo-gradient) #fff; stroke: var(--logo); }
-path#radio { fill: var(--logo-text); stroke: var(--logo-text); stroke-width: 0.3px; filter: drop-shadow(1px 1px 0.8px rgba(0, 0, 0, .5)); }
+#logo.ls svg, #logo.ls img { width: 86px; height: 86px; }
+#logo svg path { fill: var(--logo); }
 
 /* INPUTS */
 input[type=text], select[type=text], input[type=password], input[type=number] {

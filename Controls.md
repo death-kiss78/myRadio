@@ -1,4 +1,4 @@
-# ehRadio Controls
+# myRadio Controls
 
 ## Physical Controls
 
@@ -128,7 +128,7 @@ Add this to your `configuration.yaml`.
 ```
 media_player:
   - platform: ehradio
-    name: My ehRadio
+    name: myRadio
     root_topic: ehradio/myradio/
 ```
 
@@ -136,7 +136,7 @@ media_player:
 
 ## MQTT & Telnet & HTTP
 
-ehRadio has a unified command handler that can process all of the same commands as the WebUI does.
+myRadio has a unified command handler that can process all of the same commands as the WebUI does.
 
 ### MQTT
 

@@ -1,6 +1,6 @@
 <img src="images/logo-color.svg" width="50%">
 
-# ehRadio
+# myRadio
 
 ***This documentation is the same on the [Github Page](https://death-kiss78.github.io/myRadio/), which may be easier to read.***
 
@@ -8,7 +8,7 @@
 
 <img src="images/Trip5_ILI9488.jpg" width="50%">
 
-ehRadio runs on an ESP32-S3 to play Internet radio streams.
+myRadio runs on an ESP32-S3 to play Internet radio streams.
 
 A radio may be built using an ESP32-S3, an audio decoder, a display, and some inputs.
 ESP32-WROOM boards are possible but are untested. PSRAM is required so WROVER boards are not supported.
@@ -28,10 +28,10 @@ the years of work e2002 put into it.  Read [A History of ESP Radios](#a-history-
 
 ## Features
 
-ehRadio is focused on increasing usability for a non-builder / non-coder while at the same time
+myRadio is focused on increasing usability for a non-builder / non-coder while at the same time
 stressing future-compatibility for builders (starting with the ESP32-S3 and future ESP boards).
 
-ehRadio inherits a lot from ёRadio, but improvements have been made to make it more usable, more stable, and more customizable.
+myRadio inherits a lot from ёRadio, but improvements have been made to make it more usable, more stable, and more customizable.
 
 ### Features For Users
 
@@ -119,7 +119,7 @@ More screenshots from the WebUI are [here](WebUI.md).
 The best starting point (after reading this page) is the [myoptions Generator](https://death-kiss78.github.io/myRadio/myoptions/generator.html).
 This can assist in making a very good `myoptions.h` file, which should be placed in the root of the build folder next to `platformio.ini` (which the generator also makes).
 
-The generator contains almost all supported hardware peripherals and build options which can be used when building an ehRadio, as well as many notes.
+The generator contains almost all supported hardware peripherals and build options which can be used when building myRadio, as well as many notes.
 It can generate a shareable link (json is encoded in the URL) and can even contain advanced options and notes.
 
 If you need to get more advanced options, there are more build options and comments and notes in `options.h`.
@@ -130,19 +130,19 @@ Want to get even more advanced? There are bunches of notes and tools in the code
 
 ### `/data` Folder
 
-This is the folder that platformio should flash when uploading the filesystem. ehRadio uses LittleFS.
+This is the folder that platformio should flash when uploading the filesystem. myRadio uses LittleFS.
 This folder contains no files, only the 2 subfolders.
 
 #### `/data/www`
 
 This folder contains all needed file for the WebUI.
 
-The standard ehRadio `platformio.ini` file executes `extra_scripts` to gzip these files before being flashed, greatly reducing their size and increasing throughput for the WebUI.
+The standard myRadio `platformio.ini` file executes `extra_scripts` to gzip these files before being flashed, greatly reducing their size and increasing throughput for the WebUI.
 
 #### `/data/data`
 
 This folder contains files needed for operation. You can put your own files here that make the radio run "out of the box."
-None are mandatory.  All of these files should be exported directly from ehRadio.
+None are mandatory.  All of these files should be exported directly from myRadio.
 
 Examples of these files may be found in the `/builds/data` folder:
   - `playlist.csv` contains a list of radio streams (up to 65,535 stations)
@@ -250,7 +250,7 @@ With the `2026.07.31` release, the display architecture was overhauled to make l
 Further, recent releases have begun to overhaul more of the the display architecture to make switching VUs and fonts changeable as well.
 
 This involved significant changes to the original ёRadio code and layouts.
-Tools are available in the repository to assist in converting files from ёRadio mods for inclusion in ehRadio
+Tools are available in the repository to assist in converting files from ёRadio mods for inclusion in myRadio
 
 Trip5 builds include OLED 128x64 and TFTs 480x320, 320x240, 160x128.
 Other display sizes may have quirks or issues with layouts that need repair.
@@ -259,8 +259,8 @@ Other display sizes may have quirks or issues with layouts that need repair.
 
 ## Radio Creations
 
-I can't 100% confirm this, but I am pretty sure all devices built for other ESP-based radio projects will run ehRadio, as long as the hardware is supported.
-And although (as of `2026.06.15`), ehRadio has been reworked so an ESP32-S3 can be wired with an SPI display and a VS1053 (which ёRadio & myRadioV2 can't),
+I can't 100% confirm this, but I am pretty sure all devices built for other ESP-based radio projects will run myRadio, as long as the hardware is supported.
+And although (as of `2026.06.15`), myRadio has been reworked so an ESP32-S3 can be wired with an SPI display and a VS1053 (which ёRadio & myRadioV2 can't),
 
 Below here are some sketches and helpful hints to building one of the "prebuilt" firmwares as available in the Releases and the
 [online flasher](https://death-kiss78.github.io/myRadio/flasher.html).
