@@ -419,16 +419,45 @@ For that and other major needed changes to the codebase, there is a `code-issues
 | 2025.07.23 | more options in WebUI |
 | 2025.07.19 | PR to ёRadio v0.9.533: EEProm storage changed to Preferences, fixes for screens that can't display certain characters, ESPFileUpdater added (updates timezones and Radio Browser servers), proper timezones, many macros added to `myoptions.h`, Radio station search, Playback queue now RTOS background task, improved JSON and CSV file importing, maleksm's backlightdown and decoder improvements, ESP8266 support removed |
 
+### 2026.11.15 - New Branding & Project Identity
+
+myRadio officially adopts its new visual identity.
+
+The project branding was redesigned to better reflect its
+international and community-driven nature, removing
+national symbolism and introducing a neutral project-focused
+identity across firmware, WebUI, documentation, boot screens
+and release infrastructure.
+
+This marks the beginning of the myRadio community era.
+
 ### Old Readme
 
 A full history of ёRadio from v0.4.177 to v0.9.533 can be seen in the [old Readme](README.old.md).
+## Project Heritage
+
+myRadio is a continuation of a long community-driven project lineage:
+
+yoRadio (e2002)
+   ↓
+ehRadio (Trip5)
+   ↓
+myRadio (death-kiss78 / DJ KrySS / Cristian)
+
+While myRadio introduces its own branding, features and improvements,
+it would not exist without the foundations laid by e2002 and the
+substantial development work carried out by Trip5.
 
 ### Credit
 
 Thanks to:
 
-  - [death-kiss78](https://github.com/death-kiss78) - `ro_RO` & `it_IT` translations, SDMMC testing, initiated SD File Manager, inspired screensaver info text & screensaver sleep, sleep command fixes
-  - [kle7rx](https://github.com/kle7rx) - `ru_RU` translation, debugging, mute functionality, VS1053/I2S fixing, amplifier schematics, SSD1327 fixes, SD1322 fixes, NV3007 support, OLED128x64 Minimal & Compact layouts, Default layouts for OLED256x64 & TFT428x142
-  - [Kasperaitis](https://github.com/kasperaitis) - `lt_LT` translation, initiating locales, battery support and widget, and a bunch of work for ES3C28P (including ES8311 decoder, FT6336 touchscreen)
-  - [e2002](https://github.com/e2002) - for [ёRadio](https://github.com/e2002/yoradio/) without which ehRadio would not be possible
+- https://github.com/Trip5 - creator and maintainer of ehRadio, introducing major improvements, hardware support, web interface enhancements and numerous features built upon the original yoRadio project
 
+- https://github.com/death-kiss78 - ro_RO & it_IT translations, SDMMC testing, initiated SD File Manager, inspired screensaver info text & screensaver sleep, sleep command fixes, and creator/maintainer of myRadio
+
+- https://github.com/kle7rx - ru_RU translation, debugging, mute functionality, VS1053/I2S fixing, amplifier schematics, SSD1327 fixes, SD1322 fixes, NV3007 support, OLED128x64 Minimal & Compact layouts, Default layouts for OLED256x64 & TFT428x142
+
+- https://github.com/kasperaitis - lt_LT translation, initiating locales, battery support and widget, and a bunch of work for ES3C28P (including ES8311 decoder, FT6336 touchscreen)
+
+- https://github.com/e2002 - creator of yoRadio, the project that laid the foundation for ehRadio and ultimately myRadio
