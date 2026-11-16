@@ -187,16 +187,8 @@ void TextWidget::_draw() {
 // The mark a looping line prints between its tail and its head, and what the screensaver's info line joins its own parts with.
 //#define SCROLL_MARK_TEXT "\xC2\xB7" // « U+00B7 "Bullet" in UTF-8: a bare 0xB7 byte is dropped as a stray continuation
 #define SCROLL_MARK_TEXT "\036" // Round Bullet
-#define SCROLL_MARK_ICON "\007\010" // Maple Icon (Happy Canada Day!)
-// A function-local static because there is one mark shape at a time and the mark is consumed immediately either way- copied by the widget, concatenated by the screensaver line.
 const char* scrollMark() {
-  static char mark[6];
-  #ifdef EVERYDAY_IS_CANADA_DAY
-    const bool canadaDay = true;
-  #else
-    const bool canadaDay = (network.timeinfo.tm_mon == 6 && network.timeinfo.tm_mday == 1); // July is 6, 0-based
-  #endif
-  snprintf(mark, sizeof(mark), " %s ", canadaDay ? SCROLL_MARK_ICON : SCROLL_MARK_TEXT);
+  static const char mark[] = " " SCROLL_MARK_TEXT " ";
   return mark;
 }
 
@@ -326,16 +318,6 @@ void ScrollWidget::_setMark(const char* mark) {
   // Counted in codepoints, not bytes: the mark may be multi-byte (« is two), and _sepwidth is what the scroll cycle
   // is measured against - bytes would make the cycle longer than the mark it draws.
   _sepwidth = utf8_strlen(_sep) * _charWidth;
-}
-
-// The mark is the one piece of a scrolling line that can change without setText(): a holiday begins at midnight.
-// scrollMark() caches its own answer for a minute, so this is a staleness check, and the rebuild behind it happens
-// only when the mark really differs.
-void ScrollWidget::_refreshMark() {
-  if (!_sep) return;
-  const char* mark = scrollMark();
-  if (strcmp(_sep, mark) == 0) return;
-  _setMark(mark);
 }
 
 // A scrolling paint owns the whole span: it erased and printed all of it.  Recording that as the painted rectangle
@@ -506,7 +488,6 @@ void ScrollWidget::scrollTurn() {
 
 void ScrollWidget::loop() {
   if(_locked) return;
-  _refreshMark();
   // Only the OWNER steps here.  A line that wants the slot waits for Page::loop() to hand it over, so two lines can
   // never race for it and a line that has just finished a sweep cannot take it back before the others get a turn.
   if (!_doscroll || _config.textsize == 0 || dsp.getScrollId() != this) return;

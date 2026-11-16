@@ -177,9 +177,7 @@ class FillWidget: public Widget {
     void _draw();
 };
 
-// The mark a looping scroll line prints between its tail and its head, spaces included: " * ", or the holiday icon
-// on the holiday dates.  It is also what the screensaver's info line joins its own parts with, so the character
-// lives in exactly one place.  See plans/holiday-icons.md.
+// The mark a looping scroll line prints between its tail and its head, shared with the screensaver's info line.
 const char* scrollMark();
 
 // Which kind of line a scroll widget is.  It is the only thing a line says about its own pace now: the role selects
@@ -253,7 +251,6 @@ class ScrollWidget: public TextWidget {
     void _drawFrame();
     void _draw();
     void _setMark(const char* mark);   // import a mark into _sep and re-measure it
-    void _refreshMark();               // re-ask while the line is live: a holiday can begin at midnight
     void _spanPainted();               // a scrolling paint owns the whole span, not just its own box
     bool _checkIsScrollNeeded();
     bool _checkDelay(int m, uint32_t &tstamp);

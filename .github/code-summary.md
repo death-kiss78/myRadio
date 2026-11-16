@@ -4337,20 +4337,10 @@ thinks the radio forgot everything. The loader-side wait (`plans/network-recover
 - `src/displays/widgets/widgets.h`, `widgets.cpp`, `widgetsconfig.h`
   - widget classes (scroll, text, bars, VU, clock, playlist, etc.).
   - **The scroll mark is the widget's own.** `ScrollWidget`'s constructor and `init()` take no separator: they build
-    `_sep` from `scrollMark()`, a helper in `widgets.cpp` that owns the mark, its character and its one date, so no
-    other file names a character and changing it is one edit. The mark is `«` (`SCROLL_MARK_TEXT`, spelled as UTF-8 -
-    a bare 0xAB byte is a stray continuation to `preTextString()` and would be dropped, not drawn) and
-    `SCROLL_MARK_ICON` - a two-cell icon from `icons.h`'s `ICON_TABLE`, drawn by the display layer, so it needs no
-    font support - on Canada Day: `scrollMark()` asks `network.timeinfo` for `tm_mon == 6 && tm_mday == 1` and
-    nothing else, because a wrong clock is simply not 1 July, with `EVERYDAY_IS_CANADA_DAY` as an `#ifdef` for
-    looking at the icon on any day. `_setMark()` allocates `strlen(mark) + 1` (the old code hard-coded four bytes,
-    which is what made a two-byte mark impossible), measures it with `utf8_strlen` rather than `strlen` - the mark
-    may be multi-byte and `_sepwidth` is what the scroll cycle is measured against - and leaves the previous mark in
-    place if the allocation fails. `_refreshMark()`, first thing in `loop()`, re-asks and rebuilds only when the mark
-    actually differs, so a date that rolls over while the device runs lands on the next pass and nothing is
-    reallocated in between. `scrollMark()` is declared in `widgets.h` because the screensaver's info line joins its
-    own parts with it too - the literal `" * "` that used to sit in `_screensaverLine()` is gone. See
-    `plans/holiday-icons.md`.
+    `_sep` from `scrollMark()`, a helper in `widgets.cpp` that owns the fixed mark shared with the screensaver's
+    info line. `_setMark()` allocates `strlen(mark) + 1`, measures it with `utf8_strlen` rather than `strlen`, and
+    leaves the previous mark in place if allocation fails. `scrollMark()` is declared in `widgets.h` because the
+    screensaver's info line joins its own parts with it too.
   - **A scrolling line owns its whole span, and now says so.** `ScrollWidget::_spanPainted()` records
     `_oldleft`/`_oldtextwidth` as the span and sets `_textPainted`, and is called at the end of the scrolling paints
     in `setText()` and in `_draw()`. Both erase sites - `TextWidget::_paint()` and `ScrollWidget::setText()`'s
