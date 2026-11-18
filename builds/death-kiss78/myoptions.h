@@ -78,7 +78,7 @@
 #define SDMMC_D2             48
 #define SDMMC_D3             47
 
-#define MDNS_HOST            "wiki_4.0" /* Hostname without the .local suffix. If left blank, the firmware uses the chip ID. */
+#define MDNS_HOST            "wiki_4-0" /* Hostname without the .local suffix. If left blank, the firmware uses the chip ID. */
 
 #endif 
 
@@ -146,7 +146,7 @@
 #define SDMMC_D2             48
 #define SDMMC_D3             47
 
-#define MDNS_HOST            "wiki_2.8" /* Hostname without the .local suffix. If left blank, the firmware uses the chip ID. */
+#define MDNS_HOST            "wiki_2-8" /* Hostname without the .local suffix. If left blank, the firmware uses the chip ID. */
 
 #endif 
 
