@@ -49,7 +49,8 @@ eh Device Scanner app can be used to connect to the WebUI easily - get the app [
   - [`no_display_test.bin`](https://death-kiss78.github.io/myRadio/boards.html?board=no_display)
 
 ### Death-Kiss78 Firmware
-  - [`death-kiss78_es3c28s.bin`](https://death-kiss78.github.io/myRadio/boards.html?board=es3c28s)
+  - [`death-kiss78_lcd_wiki_4_0.bin`](https://death-kiss78.github.io/myRadio/boards.html?board=lcd_wiki_4_0)
+  - [`death-kiss78_lcd_wiki_2_8.bin`](https://death-kiss78.github.io/myRadio/boards.html?board=lcd_wiki_2_8)
 ### Add Yours
   - you can either fork my `myRadio` repo and edit these files or request a build be added
     - use [the generator](https://death-kiss78.github.io/myRadio/myoptions/generator.html) and copy the link and include it in your request
