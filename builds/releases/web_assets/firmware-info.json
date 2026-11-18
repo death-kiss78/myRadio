@@ -3,9 +3,14 @@
   "version": "1.0.5",
   "variants": [
     {
-      "name": "Death-Kiss78 es3c28s",
-      "manifest": "manifests/death-kiss78_es3c28s-manifest.json",
-      "description": "myRadio - death-kiss78_es3c28s"
+      "name": "Death-Kiss78 LCD Wiki 2.8",
+      "manifest": "manifests/death-kiss78_lcd_wiki_2_8-manifest.json",
+      "description": "myRadio - death-kiss78_lcd_wiki_2_8"
+    },
+    {
+      "name": "Death-Kiss78 LCD Wiki 4.0",
+      "manifest": "manifests/death-kiss78_lcd_wiki_4_0-manifest.json",
+      "description": "myRadio - death-kiss78_lcd_wiki_4_0"
     },
     {
       "name": "No Display No Display",

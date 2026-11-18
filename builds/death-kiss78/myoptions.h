@@ -6,46 +6,17 @@
 /*        ************************************************************************      */
 /*        . . .  CHECK options.h for full options, examples, and overrides   . . .      */
 
+
+#if defined(lcd_wiki_4_0)
+
 // ESP32-S3 ES3C28S (ESP32-S3-N16R8)(4.0)
 // Display: ST7796 (SPI 480x320 TFT)
 // Audio Decoder: ES8311 (PCM I2S Mono Decoder)
 // SPI Bus A: ST7796 (SPI 480x320 TFT)
-//
-//  Pin  Function
-//  ---  --------
-//  -1   TFT_RST
-//  0    BTN_MODE
-//  1    MUTE_PIN
-//  2    ENC_CLK
-//  3    ENC_DT
-//  4    I2S_MCLK
-//  5    I2S_BCLK
-//  6    I2S_DIN
-//  7    I2S_LRC
-//  8    I2S_DOUT
-//  10   TFT_CS
-//  11   SPIA_MOSI
-//  12   SPIA_SCK
-//  14   ENC_SW
-//  15   ES8311_I2C_SCL + TS_SCL
-//  16   ES8311_I2C_SDA + TS_SDA
-//  17   TS_INT
-//  18   TS_RST
-//  21   IR_PIN
-//  38   SDMMC_CLK
-//  39   SDMMC_D0
-//  40   SDMMC_CMD
-//  41   SDMMC_D1
-//  42   RGB_LED_PIN
-//  45   BRIGHTNESS_PIN
-//  46   TFT_DC
-//  47   SDMMC_D3
-//  48   SDMMC_D2
-
 
 /* --- Firmware File --- */
-  #define FIRMWARE "death-kiss78_es3c28s.bin" // "esp32_s3_n16r8", "ESP32-S3", "Death-Kiss78"
-  #define FIRMWARE_NAME "es3c28s" // "https://death-kiss78.github.io/myRadio/boards.html?board=es3c28s"
+  #define FIRMWARE "death-kiss78_lcd_wiki_4_0.bin" // "esp32_s3_n16r8", "ESP32-S3", "Death-Kiss78"
+  #define FIRMWARE_NAME "LCD Wiki 4.0" // "https://death-kiss78.github.io/myRadio/boards.html?board=lcd_wiki_4_0"
 
 #define ENABLE_UPDATER // enables OTA updates
 #define ESPFILEUPDATER_VERBOSE true // This enables ESPFileUpdater's debug log in serial.  Only add if you really want to watch serial log for what may be causing fetch errors.
@@ -107,17 +78,90 @@
 #define SDMMC_D2             48
 #define SDMMC_D3             47
 
+#define MDNS_HOST            "wiki_4.0" /* Hostname without the .local suffix. If left blank, the firmware uses the chip ID. */
+
+#endif 
+
+
+#if defined(lcd_wiki_2_8)
+// ESP32-S3 ES3C28P (ESP32-S3-N16R8)(2.8)
+// Display: ILI9341 (SPI 320x240 TFT)
+// Audio Decoder: ES8311 (PCM I2S Mono Decoder)
+// SPI Bus A: ILI9341 (SPI 320x240 TFT)
+
+/* --- Firmware File --- */
+  #define FIRMWARE "death-kiss78_lcd_wiki_2_8.bin" // "esp32_s3_n16r8", "ESP32-S3", "Death-Kiss78"
+  #define FIRMWARE_NAME "LCD Wiki 2.8" // "https://death-kiss78.github.io/myRadio/boards.html?board=lcd_wiki_2_8"
+
+#define ENABLE_UPDATER // enables OTA updates
+#define ESPFILEUPDATER_VERBOSE true // This enables ESPFileUpdater's debug log in serial.  Only add if you really want to watch serial log for what may be causing fetch errors.
+#define CHECKUPDATEURL_TIME "10 minutes"
+
+/* --- SPI Bus Pins --- */
+#define SPIA_SCK             12
+#define SPIA_MISO            255
+#define SPIA_MOSI            11
+
+/* --- Display --- */
+#define DSP_MODEL            DSP_ILI9341
+#define TFT_DC               46
+#define TFT_RST              -1        /* pin RST is attached to (-1 = EN pin) */
+#define BRIGHTNESS_PIN       45        /* pin that controls brightness / backlight (255 = unused) */
+#define DSP_INVERT_QUIRK     true      /* fixes display inversion quirk (very common) */
+#define TFT_CS               10        /* pin CS is attached to (255 = tied to GND) */
+
+/* --- Audio Decoder --- */
+#define I2S_MCLK             4
+#define I2S_BCLK             5
+#define I2S_LRC              7
+#define I2S_DOUT             8
+#define I2S_DIN              6
+#define MUTE_PIN             1         /* pin MUTE is attached to (255 for unused) */
+#define ES8311_I2C_SDA       16        /* may fix volume control on boot */
+#define ES8311_I2C_SCL       15        /* may fix volume control on boot */
+#define USE_ES8311
+#define MUTE_VAL             HIGH      /* enables turning off audio amplifier */
+#define ES8311_MAX_I2S       180       /* maximum I2S value to allow when mapping to ES8311 codec (0..254) */
+#define PLAYER_FORCE_MONO    true      /* forces VU meter to mono mode */
+
+/* --- Inputs --- */
+#define TS_MODEL             TS_MODEL_FT6336
+#define TS_SDA               16
+#define TS_SCL               15
+#define TS_INT               17
+#define TS_RST               18
+#define ENC_CLK              2
+#define ENC_DT               3
+#define ENC_SW               14
+#define ENC_STEPS            4         /* rotary encoder steps (default 2) */
+#define BTN_MODE             0
+
+/* --- Peripherals and Build Options --- */
+#define RGB_LED_PIN          42
+#define IR_PIN               21
+#define SDMMC_CLK            38
+#define SDMMC_CMD            40
+#define SDMMC_D0             39
+#define SDMMC_D1             41
+#define SDMMC_D2             48
+#define SDMMC_D3             47
+
+#define MDNS_HOST            "wiki_2.8" /* Hostname without the .local suffix. If left blank, the firmware uses the chip ID. */
+
+#endif 
+
+
+
 /* --- User Defaults --- */
 #define DSP_LOCALE           "ro_RO"
 #define TIMEZONE_NAME        "Europe/Rome"
 #define TIMEZONE_POSIX       "CET-1CEST,M3.5.0,M10.5.0/3"
-#define MDNS_HOST            "my_radio" /* Hostname without the .local suffix. If left blank, the firmware uses the chip ID. */
 #define CLOCK_TWELVE         false
 #define NUMBERED_PLAYLIST    true
 #define ONE_CLICK_SWITCH     false
 #define SCREEN_FLIP          false
-#define SS_PLAYING           false
-#define SS_NOTPLAYING        false
+#define SS_PLAYING           true
+#define SS_NOTPLAYING        true
 #define SHOW_BUFFERBAR       true
 #define SHOW_VU_METER        true
 #define SMART_START          false
@@ -130,13 +174,18 @@
 #define WEATHER_LON          "15.36671" /* longitude */
 #define WIFI_SCAN_BEST_RSSI  true
 
-/* --- Extra defines --- */
+
+#if defined(lcd_wiki_4_0) || defined(lcd_wiki_2_8)
+
 /* --- Battery --- */
 #define BATTERY_PIN 9                  /* GPIO9: ADC pin for battery voltage */
 #define BATTERY_DIVIDER_RATIO 2.0      /* 100k + 100k voltage divider = 1:2 ratio */
 #define BATTERY_ADC_REF_MV    3438     /* ESP32-S3 ADC reference voltage (calibrated EL103565 3000mAh 11.1Wh) */
 #define BATTERY_UPDATE_INTERVAL 60     /* Update every 60 seconds */
-#define RADIO_BROWSER_NO_SEND_CLICKS
+
+#endif 
+
+
 
 #if defined(IR_PIN)
 
@@ -161,6 +210,9 @@
   #define IR_BUTTON_N9       0x20DF9867
 #endif 
 
+/* --- Extra defines --- */
+  #define RADIO_BROWSER_NO_SEND_CLICKS
   #define PLAYLIST_DEFAULT_URL "https://death-kiss78.github.io/tv-online/playlists/playlist.csv"
+
 
 #endif // myoptions_h

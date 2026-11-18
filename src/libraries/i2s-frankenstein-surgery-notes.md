@@ -656,3 +656,13 @@ normalise to the last few seconds too and brighten through a quiet passage - the
    now rejected, so the index in the table finally decides the profile. Order is now LC, v1, v2, xHE - xHE last here,
    while **v2 is last on the VS1053**, because that chip does no Parametric Stereo and renders v2 as mono. The two
    forks differ in exactly that one position, deliberately; the VS1053 notes carry the hardware proof.
+
+## Post-Graft Patch Fixes (2026.11.17)
+
+**Files changed**: `src/libraries/I2S_Audio/aac_decoder/libfaad/neaacdec.h` - both floating-point `ComplexMult`
+definitions.
+
+1. **Unused `ComplexMult` emitted a compiler warning in translation units that did not call it.** The helper is defined
+   in a header with internal linkage; marking the floating-point variants `static inline` preserves their behavior and
+   linkage while silencing `-Wunused-function`. The VS1053 backend does not use this FAAD helper, so no counterpart
+   change was needed.

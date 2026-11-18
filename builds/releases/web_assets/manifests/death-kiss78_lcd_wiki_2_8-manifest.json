@@ -1,5 +1,5 @@
 {
-  "name": "myRadio - es3c28s",
+  "name": "myRadio - LCD Wiki 2.8",
   "version": "1.0.5",
   "builds": [
     {
@@ -14,7 +14,7 @@
           "offset": 32768
         },
         {
-          "path": "../firmware/death-kiss78_es3c28s.bin",
+          "path": "../firmware/death-kiss78_lcd_wiki_2_8.bin",
           "offset": 65536
         }
       ]
