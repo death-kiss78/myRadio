@@ -175,15 +175,13 @@
 #define WIFI_SCAN_BEST_RSSI  true
 
 
-#if defined(lcd_wiki_4_0)
+#if defined(lcd_wiki_4_0) || defined(lcd_wiki_2_8)
 
-/* --- Extra defines --- */
 /* --- Battery --- */
 #define BATTERY_PIN 9                  /* GPIO9: ADC pin for battery voltage */
 #define BATTERY_DIVIDER_RATIO 2.0      /* 100k + 100k voltage divider = 1:2 ratio */
 #define BATTERY_ADC_REF_MV    3438     /* ESP32-S3 ADC reference voltage (calibrated EL103565 3000mAh 11.1Wh) */
 #define BATTERY_UPDATE_INTERVAL 60     /* Update every 60 seconds */
-#define RADIO_BROWSER_NO_SEND_CLICKS
 
 #endif 
 
@@ -211,5 +209,10 @@
   #define IR_BUTTON_N8       0x20DF18E7
   #define IR_BUTTON_N9       0x20DF9867
 #endif 
+
+/* --- Extra defines --- */
+  #define RADIO_BROWSER_NO_SEND_CLICKS
+  #define PLAYLIST_DEFAULT_URL "https://death-kiss78.github.io/tv-online/playlists/playlist.csv"
+
 
 #endif // myoptions_h
