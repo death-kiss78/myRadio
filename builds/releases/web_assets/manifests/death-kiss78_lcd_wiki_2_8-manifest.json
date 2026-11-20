@@ -1,6 +1,6 @@
 {
   "name": "myRadio - LCD Wiki 2.8",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "builds": [
     {
       "chipFamily": "ESP32-S3",
