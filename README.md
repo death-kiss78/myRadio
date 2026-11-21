@@ -1,4 +1,4 @@
-<img src="images/logo-color.svg" width="50%">
+<center><img src="images/logo-color.png" width="50%"></center>
 
 # myRadio
 
