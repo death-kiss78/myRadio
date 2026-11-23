@@ -411,6 +411,67 @@ bool NetServer::begin(bool quiet) {
   webserver.on("/gen_204", HTTP_GET, captiveRedirect);                      // Android (older)
   webserver.on("/ncsi.txt", HTTP_GET, captiveRedirect);                     // Windows
   webserver.on("/connecttest.txt", HTTP_GET, captiveRedirect);              // Windows
+  webserver.on("/wifiscan", HTTP_GET, [](AsyncWebServerRequest *request) {
+    // On-demand WiFi scan — works like esp-idf-wifi-provisioner's /scan endpoint.
+    // In pure AP mode the radio cannot scan, so temporarily switch to AP+STA mode.
+    bool wasApOnly = (WiFi.getMode() == WIFI_AP);
+    if (wasApOnly) {
+      WiFi.mode(WIFI_AP_STA);
+      delay(100);  // give the radio time to reconfigure
+    }
+    WiFi.scanDelete();
+    int n = WiFi.scanNetworks(false, false, false, 300);
+    if (wasApOnly) WiFi.mode(WIFI_AP);
+    if (n <= 0) {
+      request->send(200, "application/json", "[]");
+      return;
+    }
+    // Deduplicate by SSID, keeping strongest signal
+    struct SeenNet { char ssid[33]; int rssi; bool encrypted; } seen[50];
+    int seenCount = 0;
+    for (int i = 0; i < n; i++) {
+      const char* s = WiFi.SSID(i).c_str();
+      if (strlen(s) == 0) continue;
+      for (int j = 0; j < seenCount; j++) {
+        if (strcmp(seen[j].ssid, s) == 0) {
+          if (WiFi.RSSI(i) > seen[j].rssi) {
+            seen[j].rssi = WiFi.RSSI(i);
+            seen[j].encrypted = (WiFi.encryptionType(i) != WIFI_AUTH_OPEN);
+          }
+          goto next_i;
+        }
+      }
+      if (seenCount < 50) {
+        strncpy(seen[seenCount].ssid, s, 32);
+        seen[seenCount].ssid[32] = 0;
+        seen[seenCount].rssi = WiFi.RSSI(i);
+        seen[seenCount].encrypted = (WiFi.encryptionType(i) != WIFI_AUTH_OPEN);
+        seenCount++;
+      }
+      next_i:;
+    }
+    WiFi.scanDelete();
+    // Build JSON response
+    String json = "[";
+    for (int i = 0; i < seenCount; i++) {
+      if (i > 0) json += ",";
+      json += "{\"ssid\":\"";
+      for (const char* p = seen[i].ssid; *p; p++) {
+        if (*p == '"') json += "\\\"";
+        else if (*p == '\\') json += "\\\\";
+        else json += *p;
+      }
+      json += "\",\"rssi\":";
+      json += seen[i].rssi;
+      json += ",\"encrypted\":";
+      json += seen[i].encrypted ? "true" : "false";
+      json += '}';
+    }
+    json += "]";
+    AsyncWebServerResponse *response = request->beginResponse(200, "application/json", json.c_str());
+    response->addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    request->send(response);
+  });
 
   phase("routes");
   if (psramFound()) fileCache.loadAll();

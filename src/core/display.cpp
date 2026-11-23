@@ -49,7 +49,7 @@ static constexpr uint32_t DSQ_SEND_DELAY = 200;  // ms; xQueueSend timeout in di
 static constexpr uint32_t DSQ_CRITICAL_WAIT = 2000;  // ms; how long SDINDEXSTART/SDINDEXDONE keep retrying a full queue
 // ms; how long the screensaver's info line stays blank after a track change starts.  The request that starts the
 // hold is queued by _play() AHEAD of its title write, so the window only has to cover loadStation() plus the card
-// open and the tag read - a few hundred milliseconds.  See plans/screensaver-line-hold.md.
+// open and the tag read - a few hundred milliseconds.
 static constexpr uint32_t SS_LINE_HOLD_MS = 1000;
 
 // These three flags are per-layout booleans in LayoutData now, not per-model macros.
@@ -111,7 +111,7 @@ uint8_t activeClockFontId = CLOCKFONT;
 
 // ---- Layout owns widget existence -------------------------------------------------------------
 // An omitted widget is HIDDEN, never freed - the other core may be inside its _draw().  Three flags
-// because the _draw() guards differ per type; _present is authoritative.  See plans/layout-widget-lifecycle.md
+// because the _draw() guards differ per type; _present is authoritative.
 static void hideByLayout(Widget* w) { if (w) { w->setPresent(false); w->lock(true); w->setActive(false, true); } }
 static void showByLayout(Widget* w) { if (w) { w->setPresent(true); w->unlock(); w->setActive(true); } }
 
@@ -121,8 +121,7 @@ static void showByLayout(Widget* w) { if (w) { w->setPresent(true); w->unlock();
 // to agree with the draw-time test, and four copies of "is this field on" could only ever drift.
 // The clock and the digits are no longer the exception: their `fontsize` is 0 while present and it is their
 // `align` that makes them present, which is the same rule as every other type.
-// Consult it at every show/hide AND re-show site.  See plans/layout-widget-lifecycle.md and
-// plans/layout-editor-round3.md
+// Consult it at every show/hide AND re-show site.
 
 static inline bool metaInLayout()        { return presentOf(*metaConf_ptr); }
 static inline bool title1InLayout()      { return presentOf(*title1Conf_ptr); }
@@ -265,7 +264,11 @@ static void loopDspTask(void * pvParameters) {
 }
 
 void Display::_createDspTask() {
-  xTaskCreatePinnedToCore(loopDspTask, "DspTask", (DSP_TASK_STACK_SIZE * 1024), NULL, DSP_TASK_PRIORITY, &dspTaskHandle, DSP_TASK_CORE_ID);
+  if (xTaskCreatePinnedToCore(loopDspTask, "DspTask", (DSP_TASK_STACK_SIZE * 1024), NULL, DSP_TASK_PRIORITY, &dspTaskHandle, DSP_TASK_CORE_ID) != pdPASS) {
+    ERRORLOG("DISPLAY: DspTask create failed. Rebooting.");
+    delay(10);
+    ESP.restart();
+  }
 }
 
 #ifndef DUMMYDISPLAY // ============================== DUMMYDISPLAY Below ==============================
@@ -277,7 +280,7 @@ Page *pages[] = { new Page(), new Page(), new Page(), new Page() };
 // The buffer for the two widgets that are handed a COMPOSED string rather than a single field: the weather row and the
 // screensaver's info line.  network.weatherBuf is WEATHER_STRING_L bytes INCLUDING its terminator and a ScrollWidget
 // keeps _buffsize - 2 bytes, so +2 is what makes the longest forecast fit exactly.  Everything else takes
-// WIDGET_BUFF_SIZE (172, the metadata field size).  See plans/widget-text-buffer-sizes.md.
+// WIDGET_BUFF_SIZE (172, the metadata field size).
 static constexpr uint16_t COMPOSED_LINE_BUFF = WEATHER_STRING_L + 2;
 
 static uint32_t normalizeBufferbarValue(uint32_t rawValue, uint32_t maxValue) {
@@ -290,7 +293,7 @@ static uint32_t normalizeBufferbarValue(uint32_t rawValue, uint32_t maxValue) {
 // because C++ needs it first).  `{ }` yields to the VU.
 //
 // There is no "restore" variant any more.  `width = -1` was retired in favour of writing the widget's own
-// coordinates (see plans/layout-widget-overlap.md), so a move that means "stay where the conf put you" IS
+// coordinates, so a move that means "stay where the conf put you" IS
 // a move to those coordinates - which is also what brings the clock back from the screensaver's random
 // spot, the job the negative-width branch used to do through moveBack().
 static inline bool moveZeroed(const MoveConfig& m) { return m.x == 0 && m.y == 0 && m.width == 0; }
@@ -314,7 +317,6 @@ static inline uint16_t ssGap()  { return (uint16_t)((dsp.height() + 99) / 100); 
 // the line was the one thing that came closer.  The gap ABOVE stays ssGap(): that separates the line from the meter or
 // the clock, which is spacing rather than a bezel, and keeping it proportional keeps the strip as thin as it is.  A
 // panel whose border is 1 or 2 keeps its old strip exactly, because ssGap() already wins there.
-// See plans/screensaver-line-bottom-margin.md.
 static inline uint16_t ssBottomGap() { return max(ssGap(), (uint16_t)TFT_BORDER); }
 // The line's text size, from the first layout row that states one: the weather line (the row the strip shares
 // its look with), then title1, then the playlist, and metaConf last - meta is mandatory, so the chain resolves
@@ -404,7 +406,18 @@ void Display::init() {
   if (displayQueue==NULL) { ERRORLOG("DISPLAY: displayQueue alloc failed. Rebooting."); delay(10); ESP.restart(); }
   _pager = new Pager();
   _createDspTask();
-  while(_bootStep==0) { delay(10); }
+  // The boot screen comes from the display task; without it nothing is ever drawn, so a wait that never ends is
+  // reported rather than left to freeze.
+  const uint32_t bootWaitStart = millis();
+  while(_bootStep==0) {
+    if (millis() - bootWaitStart > 5000UL) {
+      ERRORLOG("DISPLAY: boot screen never came up after %u ms (free %u, psram %u)",
+               (unsigned)(millis() - bootWaitStart), (unsigned)ESP.getFreeHeap(), (unsigned)ESP.getFreePsram());
+      delay(10);
+      ESP.restart();
+    }
+    delay(10);
+  }
   //_pager.begin();
   //_bootScreen()
   _footer = new Page();
@@ -515,7 +528,7 @@ void Display::_buildPager() {
   }
   if (presentOf(*weatherConf_ptr)) {
     // COMPOSED_LINE_BUFF, not the default: this widget is handed network.weatherBuf whole, which is built up to 511
-    // bytes.  See plans/widget-text-buffer-sizes.md.
+    // bytes.
     _weather = new ScrollWidget(*weatherConf_ptr, config.theme.weather, config.theme.background, COMPOSED_LINE_BUFF);
     _weather->setScrollRole(SCROLL_ROLE_WEATHER);
   }
@@ -639,6 +652,8 @@ void Display::_apScreen() {
     TextWidget *appass2 = (TextWidget*) &_boot->addWidget(new TextWidget(_bootConfig.apPass2Conf, config.theme.clock, config.theme.background, 30));
     #ifdef AP_PASSWORD
       appass2->setText(AP_PASSWORD);
+    #else
+      (void)appass2;   // the second password line is blank when the AP is open
     #endif
     ScrollWidget *bootSett = (ScrollWidget*) &_boot->addWidget(new ScrollWidget(_bootConfig.apSettConf, config.theme.title2, config.theme.background));
     bootSett->setScrollRole(SCROLL_ROLE_BOOT);
@@ -723,7 +738,7 @@ void Display::_start() {
   }
   // The system font is a stored preference now, so it is chosen before anything resolves layout or text:
   // every widget string is resolved after boot with the font already in place, which is why switching it
-  // takes effect here and not live (Stage 6 of plans/font-overhaul.md adds the live walk).  The clock
+  // takes effect here and not live.  The clock
   // font style is chosen the same way and for the same reason - _buildPager() below is what turns it
   // into widgets, and a widget reads the style once, when it is initialised.
   activeSystemFontId = (config.store.systemFontId < _systemFontCount) ? config.store.systemFontId : 0;
@@ -1080,7 +1095,7 @@ void Display::putRequest(displayRequestType_e type, int payload) {
   request.payload = payload;
   // Waiting, then dropping, is the deliberate choice for a saturated queue - but silently dropping hides the
   // cause behind whatever ran last.  A full reset queued six requests into a five-deep queue and looked like a
-  // battery problem; this line is what tells that story next time (see plans/display-repaint-order.md).
+  // battery problem; this line is what tells that story next time.
   bool sent = xQueueSend(displayQueue, &request, pdMS_TO_TICKS(DSQ_SEND_DELAY)) == pdTRUE;
   #ifdef USE_SD
     // The two ends of an index rebuild must not be lost.  A dropped START only costs the scan screen, but a dropped
@@ -1099,7 +1114,7 @@ void Display::putRequest(displayRequestType_e type, int payload) {
     // (_title() re-reads config.station.title, NEWWEATHER re-reads weatherBuf) and the paired ones are last-wins
     // (PSTART/PSTOP -> _layoutChange(true/false), NEWMODE, APPLYSTATE, SHOWVUMETER, DRAWVOL, DRAWPLAYLIST/
     // CLOSEPLAYLIST) - so the head is always the least useful item, while dropping the NEWCOMER is what left a stale
-    // title on the panel when a saturated queue ate a NEWTITLE.  See plans/big-text-title2-weather-overlap.md.
+    // title on the panel when a saturated queue ate a NEWTITLE.
     requestParams_t victim;
     if (xQueueReceive(displayQueue, &victim, 0) == pdTRUE) {
       _evictedRequests++;
@@ -1189,7 +1204,7 @@ bool Display::_clockHidden() {
 
 // Same shape for the weather, plus shared-row suppression during the volume overlay.  The widget belongs to the
 // player page alone, so while the screensaver owns the panel it is never drawn: the screensaver's own line is what
-// carries the weather there (see plans/screensaver-panel-ownership.md).
+// carries the weather there.
 bool Display::_weatherHidden() {
   if (config.isScreensaver) return true;
   // The editor's force-on: the line has to be on the panel to be positioned, whether or not this device has
@@ -1234,7 +1249,7 @@ void Display::_layoutChange(bool played) {
   // Lock state last, from one definition.  lock() erases for every class that implements _clear() - the
   // clock, the weather, the VU and the bars - so a yielded one of those really disappears.  A FillWidget
   // and a plain TextWidget override neither _clear() nor _reset(), so for them lock() only hides: their
-  // pixels stay until something else clears them (see plans/layout-widget-overlap.md).
+  // pixels stay until something else clears them.
   const bool clockWasHidden = (_clock && _clock->locked());
   lockIfChanged(_clock, _clockHidden());
   // The weather re-shows through hideWeatherIfChanged() itself, so it needs no redrawIfVisible() here.
@@ -1623,7 +1638,7 @@ static bool splitTitle(char* dst, size_t dstSize, char*& first, char*& second) {
 // filename, and title1/title2 are that filename cut at its first " - " (see splitTitle()), so joining them back with
 // the same separator reproduces it exactly.  Extension-stripped and case-insensitive, because one side is a filesystem
 // name and the other came back through the audio library's tag path.  The inverse of splitTitle(), which is why it
-// lives here.  See plans/screensaver-line-duplicate-name.md.
+// lives here.
 static bool nameRepeatsTitle(const char* name, const char* t1, const char* t2) {
   if (!name || !name[0] || !t1 || !t1[0]) return false;
   char joined[STATION_FIELD_LENGTH];
@@ -1717,8 +1732,7 @@ void Display::_screensaverLine() {
   // One copy, always: the widget decides what happens next, and its rule is the honest one - a line that fits the
   // strip is drawn once and centred (conf.widget.align is WA_CENTER), and only a line wider than the strip scrolls,
   // at the three-quarter speed _screensaverWidgets() sets.  An earlier version repeated the text until it
-  // overflowed so that every line moved; that made short lines marquees for no reason.  See
-  // plans/screensaver-line-centre.md.
+  // overflowed so that every line moved; that made short lines marquees for no reason.
   _sstext->setText(line);
 }
 
@@ -2245,9 +2259,9 @@ uint8_t Display::getThemeCount() { return themeCount(); }
 uint8_t Display::getSystemFontCount() { return (uint8_t)_systemFontCount; }
 uint8_t Display::getClockFontCount()  { return (uint8_t)_clockFontCount;  }
 
-// Live system font switch.  Re-resolving every widget string is the obligation here (see
-// plans/font-overhaul.md 9): the resolver memo is keyed on the font pointer, so a new pointer
-// invalidates it for free, but the strings already sitting in the widgets were resolved with the
+// Live system font switch.  Re-resolving every widget string is the obligation here: the resolver memo is
+// keyed on the font pointer, so a new pointer invalidates it for free, but the strings already sitting in the
+// widgets were resolved with the
 // old one.  There is no way to re-resolve them in place - a widget keeps only the resolved copy -
 // so the widgets are re-initialised, which is exactly what APPLYSTATE does: it re-runs each
 // widget's init() and its setText() with the source text.  Metrics cannot move (all system fonts

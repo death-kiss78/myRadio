@@ -600,6 +600,10 @@
               <input type="text" id="pass4" class="textinput" name="pass" value="" placeholder="**********" maxlength="40" autocomplete="off" readonly="readonly" data-pass="" onfocus="this.removeAttribute('readonly');" />
             </div>
           </div>
+          <div class="flex-row" id="wifiscanbtn" style="justify-content:center;padding:6px 0;">
+            <div class="fb tool" onclick="scanWifiOptions()" data-i18n="btn_scan_networks">Scan Networks</div>
+          </div>
+          <div id="wifilist" style="max-width:520px;margin:0 auto 10px;padding:0 20px;"></div>
           <div class="flex-row last">
             <input id="file-upload" type="file" accept=".txt, .csv" hidden/>
             <div class="fb local group_system hidden" data-command="wifiexport" data-i18n="btn_export">Export</div>

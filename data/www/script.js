@@ -1328,6 +1328,54 @@ function submitWiFi(){
     rebootSystem(t('msg_settings_saved', 'Settings saved. Rebooting...'));
   }
 }
+function scanWifiOptions(){
+  var list=getId('wifilist');
+  var btn=getId('wifiscanbtn');
+  list.innerHTML='<p style="text-align:center;color:var(--caption-text);">Scanning for networks&hellip;</p>';
+  btn.classList.add('hidden');
+  fetch('/wifiscan').then(function(r){return r.json();}).then(function(networks){
+    list.innerHTML='';
+    if(!networks||networks.length===0){
+      list.innerHTML='<p style="text-align:center;color:var(--caption-text);">No networks found</p>';
+      btn.classList.remove('hidden');
+      return;
+    }
+    networks.sort(function(a,b){return b.rssi-a.rssi;});
+    networks.forEach(function(net){
+      var row=document.createElement('div');
+      row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin:4px 0;background:var(--bg-secondary);border-radius:6px;cursor:pointer;border:1px solid var(--border-color);';
+      row.onmouseover=function(){this.style.borderColor='var(--accent-color)';};
+      row.onmouseout=function(){this.style.borderColor='var(--border-color)';};
+      var name=document.createElement('span');
+      name.style.cssText='color:var(--text-color);font-size:14px;font-weight:bold;';
+      name.textContent=net.ssid;
+      var info=document.createElement('span');
+      info.style.cssText='color:var(--caption-text);font-size:12px;';
+      info.textContent=net.rssi+' dBm'+(net.encrypted?' \uD83D\uDD12':'');
+      row.appendChild(name);
+      row.appendChild(info);
+      row.onclick=function(){
+        // Fill the first empty SSID slot
+        for(var i=0;i<5;i++){
+          var ssidEl=document.getElementById('ssid'+i);
+          if(ssidEl && ssidEl.value===""){
+            ssidEl.value=net.ssid;
+            var passEl=document.getElementById('pass'+i);
+            if(passEl) passEl.focus();
+            break;
+          }
+        }
+        list.innerHTML='';
+        btn.classList.remove('hidden');
+      };
+      list.appendChild(row);
+    });
+    btn.classList.remove('hidden');
+  }).catch(function(){
+    list.innerHTML='<p style="text-align:center;color:var(--caption-text);">Scan failed</p>';
+    btn.classList.remove('hidden');
+  });
+}
 function playItem(target){
   const item = target.attr('attr-id');
   setCurrentItem(item)
