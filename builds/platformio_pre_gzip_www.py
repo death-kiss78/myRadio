@@ -179,3 +179,27 @@ if any_fs_target:
 
 # Note: NOT using AddPreAction here because we run compression at init time instead
 # This ensures compression always runs for filesystem operations
+
+# Auto-upload filesystem after every firmware upload
+# This way you don't have to manually run "pio run -t uploadfs" after flashing
+import subprocess
+import sys
+
+def auto_upload_fs(source, target, env):
+    print("\n" + "="*70)
+    print("AUTO-UPLOAD: Uploading LittleFS filesystem after firmware flash...")
+    print("="*70)
+    # Use subprocess to call pio run with uploadfs target for the current environment
+    proc = subprocess.run(
+        [sys.executable, "-m", "platformio", "run", "-t", "uploadfs"],
+        cwd=Path(".").resolve(),
+        capture_output=False,
+    )
+    if proc.returncode != 0:
+        print("WARNING: Filesystem upload failed (exit code {}).".format(proc.returncode))
+        print("You can upload manually with: pio run -t uploadfs")
+    else:
+        print("Filesystem uploaded successfully.")
+    print("="*70 + "\n")
+
+env.AddPostAction("upload", auto_upload_fs)
