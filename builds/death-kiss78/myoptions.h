@@ -78,7 +78,7 @@
 #define SDMMC_D2             48
 #define SDMMC_D3             47
 
-#define MDNS_HOST            "wiki_4-0" /* Hostname without the .local suffix. If left blank, the firmware uses the chip ID. */
+#define MDNS_HOST            "myradio" /* Hostname without the .local suffix. If left blank, the firmware uses the chip ID. */
 
 #endif 
 
@@ -146,7 +146,7 @@
 #define SDMMC_D2             48
 #define SDMMC_D3             47
 
-#define MDNS_HOST            "wiki_2-8" /* Hostname without the .local suffix. If left blank, the firmware uses the chip ID. */
+#define MDNS_HOST            "myradio" /* Hostname without the .local suffix. If left blank, the firmware uses the chip ID. */
 
 #endif 
 
@@ -160,8 +160,8 @@
 #define NUMBERED_PLAYLIST    true
 #define ONE_CLICK_SWITCH     false
 #define SCREEN_FLIP          false
-#define SS_PLAYING           true
-#define SS_NOTPLAYING        true
+#define SS_PLAYING           false
+#define SS_NOTPLAYING        false
 #define SHOW_BUFFERBAR       true
 #define SHOW_VU_METER        true
 #define SMART_START          false
