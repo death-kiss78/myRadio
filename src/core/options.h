@@ -2,7 +2,7 @@
 #define options_h
 #pragma once
 
-#define RADIOVERSION "1.0.7"
+#define RADIOVERSION "1.0.8"
 
 /*******************************************************
  
