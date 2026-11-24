@@ -40,7 +40,7 @@ private:
 };
 enum import_e      : uint8_t  { IMDONE=0, IMWIFI=2 };
 // the only place we use the 32 pixel .png icon is here for empty_fs
-const char emptyfs_html[] PROGMEM = R"emptyfs(
+const char emptyfs_html[] PROGMEM = R"(
 <!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.25"><meta charset="UTF-8">
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABJ0AAASdAHeZh94AAAAlElEQVRYw+2XSw6AIAxEG9fe/0zeSuOCBI2FVqafKCTdFeYFBmiJBse2LjtFjn8DnOIlwgHcIe7iLgC1SA/ABKgW4gBMd+RJlAuTq2QKIJmIBLjkaRYYFWdzW6ZCAHTzpItqAMSgmrNFxmuDTQC4+ARI4QFvCMh7Dxf3gDD5+9NvecobEAqT34DN8klQS7r1Cp9oTA8ah+h47LQOmQAAAABJRU5ErkJggg==">
 <title>myRadio - WEB Board Uploader</title><style>html, body{margin: 0; padding: 0; height: 100%; background-color:#000; color:#eecccc; font-size:20px; display:flex; flex-direction:column;}
@@ -81,10 +81,6 @@ select{background:#272727; color:#eecccc; padding:4px 8px; font-size:16px; borde
 <h2>myRadio - <span data-i18n="z_credentials">Credentials</span></h2>
 <hr />
 </div>
-<div id="wifiscanbtn" style="text-align:center;margin:10px 0;">
-<button type="button" onclick="scanWifi()" style="border:2px solid #eecccc;color:#eecccc;padding:6px 16px;border-radius:25px;background-color:transparent;cursor:pointer;font-size:16px;">Scan Networks</button>
-</div>
-<div id="wifilist" style="max-width:500px;margin:0 auto 10px;padding:0 20px;"></div>
 <form name="wifiform" method="post" enctype="multipart/form-data">
 <div class="flex"><div><label for="ssid" data-i18n="z_ssid">SSID:</label><input type="text" id="ssid" name="ssid" value="" maxlength="30" autocomplete="off"></div>
 <div><label for="pass" data-i18n="z_password">password:</label><input type="password" id="pass" name="pass" value="" maxlength="40" autocomplete="off"></div>
@@ -128,49 +124,9 @@ sel.appendChild(o);
 sel.value=activeLocale;
 sel.onchange=function(){window.location='/?l='+this.value;};
 });
-function scanWifi(){
-var list=document.getElementById('wifilist');
-var btn=document.getElementById('wifiscanbtn');
-list.innerHTML='<p style="text-align:center;color:#ccc;">Scanning for networks&hellip;</p>';
-btn.style.display='none';
-fetch('/wifiscan').then(function(r){return r.json();}).then(function(networks){
-list.innerHTML='';
-if(!networks||networks.length===0){
-list.innerHTML='<p style="text-align:center;color:#ccc;">No networks found</p>';
-btn.style.display='';
-return;
-}
-networks.sort(function(a,b){return b.rssi-a.rssi;});
-networks.forEach(function(net){
-var row=document.createElement('div');
-row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin:4px 0;background:#1a1a1a;border-radius:6px;cursor:pointer;border:1px solid #333;';
-row.onmouseover=function(){this.style.borderColor='#eecccc';};
-row.onmouseout=function(){this.style.borderColor='#333';};
-var name=document.createElement('span');
-name.style.cssText='color:#eecccc;font-size:14px;font-weight:bold;';
-name.textContent=net.ssid;
-var info=document.createElement('span');
-info.style.cssText='color:#888;font-size:12px;';
-info.textContent=net.rssi+' dBm'+(net.encrypted?' \uD83D\uDD12':'');
-row.appendChild(name);
-row.appendChild(info);
-row.onclick=function(){
-document.getElementById('ssid').value=net.ssid;
-document.getElementById('pass').focus();
-list.innerHTML='';
-btn.style.display='';
-};
-list.appendChild(row);
-});
-btn.style.display='';
-}).catch(function(){
-list.innerHTML='<p style="text-align:center;color:#ccc;">Scan failed</p>';
-btn.style.display='';
-});
-}
 </script>
 </html>
-)emptyfs";
+)";
 const char index_html[] PROGMEM = R"(
 <!DOCTYPE html>
 <html>
