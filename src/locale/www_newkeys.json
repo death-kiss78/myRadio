@@ -1,3 +1,5 @@
 {
-  "lbl_stop_playing": "Stop Timer"
+  "lbl_stop_playing": "Stop Timer",
+  "btn_scan_networks": "Scan Networks",
+  "btn_update_to": "Update to"
 }

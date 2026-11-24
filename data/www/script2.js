@@ -121,7 +121,7 @@ function checkOnlineUpdate(button) {
         button.value = t('btn_check_online', 'Check for Online Update');
         button.disabled = false;
       });
-  } else if (button.value.startsWith("Update to")) {
+  } else if (button.value.startsWith(t('btn_update_to', 'Update to'))) {
     console.log("Starting online update via HTTP");
     // Show and reset progress bar
     const bar = getId('updateprogress');
