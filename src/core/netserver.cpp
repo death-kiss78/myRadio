@@ -45,7 +45,7 @@
 static constexpr uint32_t SEARCHRESULTS_BUFFER        = 32;   // KB; chunk size for chunked HTTP transfers (radio-browser.info)
 static constexpr uint32_t SEARCHRESULTS_YIELDINTERVAL  = 0;    // with a large buffer, 0 all but eliminates skipping
 // #define MAX_PL_READ_BYTES 1024*64                             // optional chunked transfers for playlist.csv/wifi.csv
-static constexpr size_t   WEBSOCKET_BUFFER             = 512;  // websocket / JSON payload buffer
+static constexpr size_t   WEBSOCKET_BUFFER             = 1024;  // websocket / JSON payload buffer
 static constexpr uint32_t NETSERVER_TASK_DELAY         = 1;    // ms; yield between netserver.loop() iterations
 static constexpr uint32_t NSQ_SEND_DELAY               = 300;  // ms; xQueueSend timeout for nsQueue (requestOnChange)
 static constexpr uint32_t NS_QUEUE_DELAY               = 0;    // xQueueReceive timeout for nsQueue (processQueue)
