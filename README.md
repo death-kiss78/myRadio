@@ -22,12 +22,7 @@ Some libraries may only be available from [Platformio Registry](https://registry
 
 myRadio continues a long community-driven project lineage:
 
-yoRadio ( [e2002](https://github.com/e2002) )
-   ↓
-ehRadio ( [Trip5](https://github.com/Trip5) )
-   ↓
-myRadio ( [death-kiss78](https://github.com/death-kiss78) )
-
+**yoRadio ( [e2002](https://github.com/e2002) ) → ehRadio ( [Trip5](https://github.com/Trip5) ) → myRadio ( [DeaTh-KiSS78](https://github.com/death-kiss78) )**
 
 While myRadio introduces its own branding, features, visual identity and improvements, it would not exist without the foundations laid by e2002 and the substantial development work carried out by Trip5.
 
