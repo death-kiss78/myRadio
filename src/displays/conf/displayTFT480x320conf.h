@@ -129,7 +129,7 @@ const LayoutData _layouts[] PROGMEM = {
 
     {   // BoomBox
         /* SCROLLS             {{ offset, top, fontsize, align }, width } */
-        .metaConf            = {{ 10, 8, 4, WA_CENTER }, 460 },
+        .metaConf            = {{ 10, 8, 4, WA_CENTER }, 400 },
         .title1Conf          = {{ 10, 205, 2, WA_CENTER }, 460 },
         .title2Conf          = {{ 10, 226, 2, WA_CENTER }, 460 },
         .playlistConf        = {{ 10, 146, 3, WA_LEFT }, 460 },
@@ -155,7 +155,7 @@ const LayoutData _layouts[] PROGMEM = {
         /* VU BARS WIDGET      { offset, top, 0, align (WA_LEFT=default / WA_CENTER=boombox / WA_RIGHT=rotate 90) } */
         .vuConf              = { 38, 252, 0, WA_CENTER },
         /* CODEC BADGE         {{ offset, top, fontsize, align }, dimension} */
-        .fullbitrateConf     = {{ 50, 72, 2, WA_RIGHT }, 52 },
+        .fullbitrateConf     = {{ 425, 0, 2, WA_RIGHT }, 50 },
         /* VU BANDS            { onebandwidth, onebandheight, bandsHspace, bandsVspace, numofbands } */
         .bandsConf           = { 200, 25, 4, 2, 20 },
         /* MOVES               { left, top, width } */
